@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakBot — заговори на английском или испанском за месяц</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0D1117;
+    --bg2: #131920;
+    --bg3: #1A2330;
+    --fire: #FF6B35;
+    --fire-dim: #C94E1E;
+    --cream: #F5F0E8;
+    --muted: #8A9BB0;
+    --border: rgba(255,255,255,0.07);
+    --radius: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--cream);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(13,17,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+    color: var(--cream);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo span { color: var(--fire); }
+  .nav-cta {
+    background: var(--fire); color: #fff;
+    padding: 10px 22px; border-radius: 50px;
+    font-weight: 700; font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--fire-dim); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 32px 80px;
+    max-width: 900px; margin: 0 auto;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 2px;
+    color: var(--fire); text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block; width: 32px; height: 2px;
+    background: var(--fire);
+  }
+  .hero h1 {
+    font-size: clamp(42px, 8vw, 88px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 36px;
+  }
+  .hero h1 .accent { color: var(--fire); }
+  .hero h1 .dim { color: var(--muted); }
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 48px;
+    line-height: 1.7;
+  }
+  .hero-sub strong { color: var(--cream); }
+  .hero-buttons {
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .btn-primary {
+    background: var(--fire); color: #fff;
+    padding: 16px 36px; border-radius: 50px;
+    font-weight: 800; font-size: 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--fire-dim); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,53,0.3); }
+  .btn-secondary {
+    color: var(--muted); font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--cream); }
+
+  .hero-flags {
+    display: flex; gap: 10px; margin-bottom: 32px;
+  }
+  .flag-pill {
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* PAIN SECTION */
+  .pain {
+    background: var(--bg2);
+    padding: 80px 32px;
+    text-align: center;
+  }
+  .pain-inner { max-width: 700px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 2.5px;
+    color: var(--fire); text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .pain h2 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+  .pain-items {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin-top: 48px; text-align: left;
+  }
+  .pain-item {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .pain-item .icon { font-size: 28px; margin-bottom: 12px; }
+  .pain-item p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+  .pain-item p strong { color: var(--cream); display: block; margin-bottom: 4px; font-size: 16px; }
+
+  /* HOW IT WORKS */
+  .how {
+    padding: 100px 32px;
+    max-width: 960px; margin: 0 auto;
+  }
+  .how-header { text-align: center; margin-bottom: 64px; }
+  .how-header h2 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; letter-spacing: -1px; margin-bottom: 16px;
+  }
+  .how-header p { color: var(--muted); font-size: 17px; }
+
+  .steps {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .step {
+    display: grid; grid-template-columns: 56px 1fr;
+    gap: 28px; align-items: start;
+    padding-bottom: 48px;
+    position: relative;
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step-line {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .step-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--bg3); border: 2px solid var(--fire);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; color: var(--fire);
+    flex-shrink: 0;
+  }
+  .step-connector {
+    width: 2px; flex: 1; min-height: 40px;
+    background: linear-gradient(to bottom, var(--fire), transparent);
+    margin-top: 8px;
+  }
+  .step:last-child .step-connector { display: none; }
+  .step-body { padding-top: 10px; }
+  .step-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--fire); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .step-body h3 {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .step-body p { color: var(--muted); font-size: 15px; line-height: 1.7; }
+  .step-body p strong { color: var(--cream); }
+
+  /* TIMELINE / RESULT */
+  .result {
+    background: var(--bg2);
+    padding: 100px 32px;
+    text-align: center;
+  }
+  .result-inner { max-width: 720px; margin: 0 auto; }
+  .result h2 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .result > .result-inner > p {
+    color: var(--muted); font-size: 17px; margin-bottom: 64px;
+  }
+  .timeline {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+  .tl-item {
+    background: var(--bg3);
+    padding: 28px 20px;
+    text-align: left;
+    position: relative;
+  }
+  .tl-item.active {
+    background: var(--fire);
+  }
+  .tl-week {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7; margin-bottom: 10px;
+  }
+  .tl-item h4 {
+    font-size: 16px; font-weight: 700; margin-bottom: 6px;
+  }
+  .tl-item p {
+    font-size: 13px; opacity: 0.75; line-height: 1.5;
+  }
+  .result-quote {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    font-size: 20px; font-weight: 700; line-height: 1.4;
+    border-left: 4px solid var(--fire);
+    text-align: left;
+  }
+  .result-quote span { color: var(--fire); }
+
+  /* WHY */
+  .why {
+    padding: 100px 32px;
+    max-width: 960px; margin: 0 auto;
+  }
+  .why-header { text-align: center; margin-bottom: 56px; }
+  .why-header h2 {
+    font-size: clamp(26px, 4.5vw, 42px);
+    font-weight: 800; letter-spacing: -1px;
+  }
+  .why-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .why-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: border-color 0.2s;
+  }
+  .why-card:hover { border-color: var(--fire); }
+  .why-icon { font-size: 32px; margin-bottom: 16px; }
+  .why-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .why-card p { color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+  /* PRICING */
+  .pricing {
+    background: var(--bg2);
+    padding: 100px 32px;
+    text-align: center;
+  }
+  .pricing-inner { max-width: 560px; margin: 0 auto; }
+  .pricing h2 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; letter-spacing: -1px; margin-bottom: 12px;
+  }
+  .pricing-sub { color: var(--muted); font-size: 17px; margin-bottom: 48px; }
+  .price-card {
+    background: var(--bg3); border: 2px solid var(--fire);
+    border-radius: 24px; padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .price-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--fire), #FF9A70);
+  }
+  .free-badge {
+    display: inline-block;
+    background: rgba(255,107,53,0.15); color: var(--fire);
+    border: 1px solid rgba(255,107,53,0.3);
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 28px;
+  }
+  .price-amount {
+    font-size: 72px; font-weight: 900; letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-amount sup { font-size: 28px; font-weight: 700; vertical-align: top; margin-top: 14px; }
+  .price-period { color: var(--muted); font-size: 15px; margin-bottom: 36px; }
+  .price-features {
+    list-style: none; text-align: left;
+    display: flex; flex-direction: column; gap: 14px;
+    margin-bottom: 40px;
+  }
+  .price-features li {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 15px;
+  }
+  .price-features li::before {
+    content: '✓';
+    color: var(--fire); font-weight: 800;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .price-note {
+    color: var(--muted); font-size: 13px; margin-top: 20px;
+  }
+
+  /* CTA FINAL */
+  .cta-final {
+    padding: 100px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-final::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .cta-final-inner { max-width: 680px; margin: 0 auto; position: relative; }
+  .cta-final h2 {
+    font-size: clamp(32px, 6vw, 58px);
+    font-weight: 900; letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .cta-final h2 .accent { color: var(--fire); }
+  .cta-final p {
+    color: var(--muted); font-size: 18px; margin-bottom: 40px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px;
+    text-align: center;
+    color: var(--muted); font-size: 13px;
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .hero h1 { letter-spacing: -1px; }
+    .pain, .how, .result, .why, .pricing, .cta-final { padding: 64px 20px; }
+    .price-amount { font-size: 56px; }
+    .price-card { padding: 36px 24px; }
+    .tl-item { padding: 20px 16px; }
+    .step { grid-template-columns: 44px 1fr; gap: 16px; }
+    .step-num { width: 44px; height: 44px; font-size: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">🗣 Speak<span>Bot</span></div>
+  <a href="https://t.me/speakbot" class="nav-cta">Попробовать бесплатно →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-flags">
+    <div class="flag-pill">🇬🇧 Английский</div>
+    <div class="flag-pill">🇪🇸 Испанский</div>
+  </div>
+  <div class="hero-eyebrow">Разговорный навык с нуля</div>
+  <h1>
+    Ты знаешь язык.<br>
+    Но не <span class="accent">можешь</span><br>
+    <span class="dim">говорить.</span>
+  </h1>
+  <p class="hero-sub">
+    <strong>SpeakBot</strong> — Telegram-бот, который за месяц ежедневных 20-минутных занятий
+    переведёт твои пассивные знания в живую речь. Никаких приложений. Никаких курсов. Только практика.
+  </p>
+  <div class="hero-buttons">
+    <a href="https://t.me/speakbot" class="btn-primary">
+      🚀 2 дня бесплатно
+    </a>
+    <a href="#how" class="btn-secondary">Как это работает ↓</a>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="pain-inner reveal">
+    <div class="section-label">Знакомо?</div>
+    <h2>Годами учишь — и всё равно молчишь</h2>
+    <div class="pain-items">
+      <div class="pain-item">
+        <div class="icon">🧠</div>
+        <p><strong>Слова знаю, говорить не могу</strong>Читаешь, понимаешь — но при разговоре всё куда-то исчезает.</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">😶</div>
+        <p><strong>Страх сказать неправильно</strong>Проще промолчать, чем ошибиться. Языковой барьер — это не про слова, это про страх.</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">🔄</div>
+        <p><strong>Начинаешь и бросаешь</strong>Приложения, курсы, подкасты — и снова ноль прогресса в разговорной речи.</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">💬</div>
+        <p><strong>Нет живой практики</strong>Не с кем говорить, страшно выглядеть глупо, нет системы — нет результата.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-header reveal">
+    <div class="section-label">Метод</div>
+    <h2>Как ты начнёшь говорить</h2>
+    <p>Простой ежедневный ритуал — 20 минут в день. Без репетиторов по расписанию.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-line">
+        <div class="step-num">1</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag">Старт</div>
+        <h3>Выбираешь язык и уровень</h3>
+        <p>Английский или испанский. Выбираешь свой уровень — или проходишь короткий тест прямо в боте, если не знаешь. <strong>Бот подстраивается под тебя.</strong></p>
+      </div>
+    </div>
+
+    <div class="step reveal">
+      <div class="step-line">
+        <div class="step-num">2</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag">Каждый день</div>
+        <h3>Получаешь текст по уровню</h3>
+        <p>Каждое утро бот присылает небольшой текст, идеально подобранный под твой уровень. <strong>Читаешь, переводишь, выписываешь незнакомые слова.</strong> Это занимает 10 минут.</p>
+      </div>
+    </div>
+
+    <div class="step reveal">
+      <div class="step-line">
+        <div class="step-num">3</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag">Главный шаг</div>
+        <h3>Записываешь себя на видео</h3>
+        <p>Пересказываешь текст на камеру, используя новые слова и выражения. <strong>Именно это ломает барьер.</strong> Слышишь себя, привыкаешь к своему голосу на языке. Отправляешь видео в бот.</p>
+      </div>
+    </div>
+
+    <div class="step reveal">
+      <div class="step-line">
+        <div class="step-num">4</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag">Обратная связь</div>
+        <h3>Преподаватель разбирает ошибки</h3>
+        <p>Живой преподаватель смотрит твоё видео и даёт <strong>персональную обратную связь</strong> — исправляет произношение, грамматику, подсказывает более точные выражения.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT / TIMELINE -->
+<section class="result">
+  <div class="result-inner">
+    <div class="section-label reveal">Прогресс</div>
+    <h2 class="reveal">Что происходит за месяц</h2>
+    <p class="reveal">Ежедневные 20 минут складываются в реальный результат — не "почти говорю", а говорю.</p>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-week">Неделя 1</div>
+        <h4>Привыкаешь к своему голосу</h4>
+        <p>Первые видео неловкие. Это нормально и нужно.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-week">Неделя 2</div>
+        <h4>Слова «садятся» в голове</h4>
+        <p>Новая лексика начинает появляться автоматически.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-week">Неделя 3</div>
+        <h4>Пропадает страх ошибиться</h4>
+        <p>Ошибки перестают останавливать — ты продолжаешь говорить.</p>
+      </div>
+      <div class="tl-item active">
+        <div class="tl-week">Неделя 4</div>
+        <h4>Ты говоришь 🔥</h4>
+        <p>Связная речь, уверенность, барьер сломлен.</p>
+      </div>
+    </div>
+
+    <div class="result-quote reveal">
+      Через месяц ты не просто «знаешь язык» — ты на нём <span>говоришь</span>. Это два совершенно разных состояния.
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="why-header reveal">
+    <div class="section-label">Преимущества</div>
+    <h2>Почему это работает, а курсы — нет</h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-icon">🎯</div>
+      <h3>Только разговорный навык</h3>
+      <p>Никакой грамматики ради грамматики. Всё направлено на одно — заставить тебя говорить.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">📹</div>
+      <h3>Видео-пересказ = реальная практика</h3>
+      <p>Ты говоришь каждый день, а не раз в неделю с репетитором. Навык строится через повторение.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">👩‍🏫</div>
+      <h3>Живая обратная связь</h3>
+      <p>Настоящий преподаватель — не ИИ. Он видит твои конкретные ошибки и исправляет именно их.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">⏱</div>
+      <h3>20 минут в день</h3>
+      <p>Не нужно перестраивать расписание. Подходит занятым людям — утром, в обед, вечером.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">📈</div>
+      <h3>Текст под твой уровень</h3>
+      <p>Не слишком сложно и не слишком просто. Бот всегда в зоне твоего роста.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">💬</div>
+      <h3>Прямо в Telegram</h3>
+      <p>Никаких приложений, регистраций и сложных интерфейсов. Всё там, где ты уже есть.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="pricing-inner">
+    <div class="section-label reveal">Стоимость</div>
+    <h2 class="reveal">Начни прямо сейчас</h2>
+    <p class="pricing-sub reveal">2 дня бесплатно — потом реши, подходит ли тебе</p>
+
+    <div class="price-card reveal">
+      <div class="free-badge">🎁 2 дня бесплатно</div>
+      <div class="price-amount"><sup>₽</sup>290</div>
+      <div class="price-period">в неделю после пробного периода</div>
+      <ul class="price-features">
+        <li>Ежедневный текст под твой уровень</li>
+        <li>Проверка видео-пересказа преподавателем</li>
+        <li>Персональная обратная связь по ошибкам</li>
+        <li>Английский и испанский — на выбор</li>
+        <li>Тест для определения уровня</li>
+        <li>Без обязательств — отменить можно в любой момент</li>
+      </ul>
+      <a href="https://t.me/speakbot" class="btn-primary" style="width:100%; justify-content:center; font-size:17px; padding:18px;">
+        Попробовать 2 дня бесплатно →
+      </a>
+      <p class="price-note">Меньше стакана кофе в неделю — а результат останется навсегда</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-final-inner">
+    <h2 class="reveal">Хватит откладывать.<br><span class="accent">Заговори.</span></h2>
+    <p class="reveal">Следующий месяц пройдёт в любом случае. Вопрос только — ты будешь говорить по-английски или нет.</p>
+    <a href="https://t.me/speakbot" class="btn-primary reveal" style="font-size:18px; padding:18px 44px;">
+      🚀 Начать бесплатно в Telegram
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 SpeakBot · Telegram-бот для развития разговорного навыка</p>
+</footer>
+
+<script>
+  // Intersection Observer for reveal animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
